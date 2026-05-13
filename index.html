@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHADOW SHOP - VIP SYSTEM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #7b2cbf; --cyan: #00f2ff; --bg: #050505; --card: #12141d; --text: #e2e8f0; --green: #00ff88; --red: #ff4d4d; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; overflow-x: hidden; }
+        
+        /* AUTH SCREEN */
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: var(--card); padding: 30px; border-radius: 20px; border: 2px solid var(--primary); width: 90%; max-width: 350px; text-align: center; box-shadow: 0 0 20px rgba(123, 44, 191, 0.4); }
+
+        /* GIAO DIỆN CHÍNH */
+        #main-content { display: none; }
+        .header { background: var(--card); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); position: sticky; top: 0; z-index: 1000; }
+        
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+        .section-title { color: var(--cyan); border-left: 4px solid var(--cyan); padding-left: 10px; margin: 20px 0 10px 0; text-transform: uppercase; font-weight: 900; }
+
+        /* GRID DỊCH VỤ */
+        .grid-services { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .service-card { background: var(--card); border: 1px solid #2d334a; padding: 15px; border-radius: 15px; text-align: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .service-card:hover { border-color: var(--cyan); transform: translateY(-3px); }
+        .status-badge { font-size: 10px; position: absolute; top: 8px; right: 8px; font-weight: bold; }
+        .price { color: var(--cyan); font-weight: 900; font-size: 18px; margin: 10px 0; }
+        
+        /* FORM NẠP THẺ */
+        .card-nap { background: var(--card); border-radius: 15px; padding: 20px; border: 1px solid #2d334a; }
+        .input-pro { width: 100%; padding: 12px; margin: 8px 0; background: #080a12; border: 1px solid #333; color: white; border-radius: 10px; outline: none; box-sizing: border-box; }
+        .input-pro:focus { border-color: var(--cyan); }
+
+        .btn-buy { width: 100%; padding: 12px; background: var(--cyan); border: none; font-weight: 900; border-radius: 10px; cursor: pointer; color: #000; transition: 0.3s; }
+        .btn-buy:disabled { background: #555; cursor: not-allowed; }
+
+        /* MODAL THÀNH CÔNG SIÊU ĐẸP */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card); border: 2px solid var(--green); padding: 30px; border-radius: 20px; text-align: center; width: 85%; max-width: 400px; animation: bounceIn 0.5s; }
+        .key-display { background: #000; padding: 15px; border-radius: 10px; border: 1px dashed var(--cyan); color: var(--cyan); font-family: monospace; margin: 15px 0; word-break: break-all; font-size: 16px; }
+        
+        /* ZALO */
+        .zalo-btn { position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; background: #0084ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 3000; border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+        @keyframes bounceIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen">
+        <div class="auth-card">
+            <h2 style="color: var(--cyan); margin-bottom: 5px;">SHADOW SHOP</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Vui lòng đăng nhập để tiếp tục</p>
+            <input type="text" id="user-login" class="input-pro" placeholder="Tên tài khoản">
+            <input type="password" id="pass-login" class="input-pro" placeholder="Mật khẩu">
+            <button class="btn-buy" onclick="checkLogin()" style="margin-top: 10px;">ĐĂNG NHẬP</button>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <div class="header">
+            <div style="font-weight:900; font-size: 20px;">SHADOW <span style="color:var(--cyan)">SHOP</span></div>
+            <div id="web-balance" style="color:var(--green); border: 1px solid var(--green); padding: 5px 12px; border-radius: 20px; font-weight: bold;">0đ</div>
+        </div>
+
+        <div class="container">
+            <div class="section-title">Dịch vụ Drip VIP</div>
+            <div class="grid-services">
+                <div class="service-card">
+                    <span class="status-badge" style="color:var(--green)">● CÒN HÀNG</span>
+                    <h4 style="margin:10px 0 5px 0">DRIP 1 DAY</h4>
+                    <div class="price">60.000đ</div>
+                    <button class="btn-buy" onclick="buy('DRIP_1D', 60000)">MUA NGAY</button>
+                </div>
+                <div class="service-card">
+                    <span class="status-badge" style="color:var(--red)">● HẾT HÀNG</span>
+                    <h4 style="margin:10px 0 5px 0">DRIP 7 DAY</h4>
+                    <div class="price">100.000đ</div>
+                    <button class="btn-buy" disabled>HẾT HÀNG</button>
+                </div>
+            </div>
+
+            <div class="section-title">Dịch vụ Zygame</div>
+            <div class="grid-services">
+                <div class="service-card">
+                    <span class="status-badge" style="color:var(--green)">● CÒN HÀNG</span>
+                    <h4 style="margin:10px 0 5px 0">ZY 1 DAY</h4>
+                    <div class="price">50.000đ</div>
+                    <button class="btn-buy" onclick="buy('ZY_1D', 50000)">MUA NGAY</button>
+                </div>
+                <div class="service-card">
+                    <span class="status-badge" style="color:var(--green)">● CÒN HÀNG</span>
+                    <h4 style="margin:10px 0 5px 0">ZY 30 DAY</h4>
+                    <div class="price">250.000đ</div>
+                    <button class="btn-buy" onclick="buy('ZY_30D', 250000)">MUA NGAY</button>
+                </div>
+            </div>
+
+            <div class="section-title">Nạp thẻ cào tự động</div>
+            <div class="card-nap">
+                <select id="card-type" class="input-pro">
+                    <option value="Viettel">Viettel</option>
+                    <option value="Vinaphone">Vinaphone</option>
+                    <option value="Mobifone">Mobifone</option>
+                    <option value="Garena">Garena</option>
+                </select>
+                <select id="card-amount" class="input-pro">
+                    <option value="10000">10.000đ</option>
+                    <option value="20000">20.000đ</option>
+                    <option value="50000">50.000đ</option>
+                    <option value="100000">100.000đ</option>
+                    <option value="200000">200.000đ</option>
+                    <option value="500000">500.000đ</option>
+                </select>
+                <input type="text" id="seri" class="input-pro" placeholder="Nhập số Seri">
+                <input type="text" id="pin" class="input-pro" placeholder="Nhập mã PIN (Mã thẻ)">
+                <button id="btn-nap" class="btn-buy" style="background:var(--green); margin-top: 10px;" onclick="processNap()">GỬI THẺ NGAY</button>
+                <p style="font-size: 11px; color: #777; text-align: center; margin-top: 10px;">Vui lòng nhập chính xác thông tin thẻ!</p>
+            </div>
+        </div>
+
+        <a href="https://zalo.me/84364684151" target="_blank" class="zalo-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" width="35">
+        </a>
+    </div>
+
+    <div id="modal-success" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-check-circle" style="font-size: 60px; color: var(--green);"></i>
+            <h2 style="margin: 15px 0 5px 0; color: white;">THÀNH CÔNG!</h2>
+            <p style="font-size: 13px; color: #aaa;">Mã đơn: <b id="res-ma" style="color:var(--primary)">#SJA...</b></p>
+            <div class="key-display" id="res-key">V3-KEY-SHADOW-XXXX-XXXX</div>
+            <p style="font-size: 11px; color: var(--red); margin-bottom: 20px;">Vui lòng lưu lại Key trước khi đóng!</p>
+            <button class="btn-buy" onclick="location.reload()">ĐÓNG & COPY</button>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXFl1LmVzYjxJbxXNMdttp22uNgvvphkLAOcVe6fNhpVIZFyvp91jtB9DQoaJoM4XA/exec";
+        let currentUser = "";
+
+        // 1. Kiểm tra đăng nhập
+        function checkLogin() {
+            const u = document.getElementById('user-login').value;
+            const p = document.getElementById('pass-login').value;
+            
+            if (u === "shadow+999" && p === "HV0308hv") {
+                currentUser = u;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                alert("Chào Admin Vinh!");
+            } else if (u.length >= 3 && p.length >= 3) {
+                currentUser = u;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                alert("Tài khoản/Mật khẩu quá ngắn!");
+            }
+        }
+
+        // 2. Xử lý nạp thẻ
+        async function processNap() {
+            const s = document.getElementById('seri').value.trim();
+            const p = document.getElementById('pin').value.trim();
+            const btn = document.getElementById('btn-nap');
+
+            if (s === "" || p === "") {
+                alert("Vui lòng nhập đầy đủ Seri và PIN!");
+                return;
+            }
+            if (s.length < 10 || p.length < 10) {
+                alert("Thông tin thẻ không hợp lệ (Quá ngắn)!");
+                return;
+            }
+
+            btn.innerText = "VUI LÒNG ĐỢI TRONG GIÂY LÁT...";
+            btn.disabled = true;
+
+            try {
+                let res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        action: "deposit",
+                        user: currentUser,
+                        type: document.getElementById('card-type').value,
+                        amount: document.getElementById('card-amount').value,
+                        receive: "Đang tính", // Sẽ tính bên Server
+                        seri: s,
+                        pin: p
+                    })
+                });
+                alert("Gửi thẻ thành công! Vui lòng đợi Admin kiểm tra.");
+                location.reload();
+            } catch (e) {
+                alert("Có lỗi xảy ra, thử lại sau!");
+                btn.innerText = "GỬI THẺ NGAY";
+                btn.disabled = false;
+            }
+        }
+
+        // 3. Xử lý mua hàng
+        function buy(type, price) {
+            // Hiệu ứng tạo mã đơn giả lập (Trong thực tế Vinh sẽ fetch từ Apps Script để trừ tiền thật)
+            const maDon = "#SJA" + Math.random().toString(36).toUpperCase().substring(2, 10);
+            
+            document.getElementById('res-ma').innerText = maDon;
+            document.getElementById('res-key').innerText = "V3-SHADOW-GHOST-" + Math.random().toString(36).toUpperCase().substring(2, 6) + "-OK";
+            document.getElementById('modal-success').style.display = 'flex';
+        }
+    </script>
+</body>
+  </html>
+  
